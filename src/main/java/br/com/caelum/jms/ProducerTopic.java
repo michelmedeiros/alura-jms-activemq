@@ -25,7 +25,13 @@ public class ProducerTopic {
         MessageProducer producer = session.createProducer(topic);
 
         for(int i =1; i <= 5; i++) {
-            Message message = session.createTextMessage("<pedido><id>" + i +"</id></pedido>");
+            //Definindo propriedades de seletor
+            Message message = session.createTextMessage("<pedido><id>" + i +"</id><ebook>true</ebook></pedido>");
+            message.setBooleanProperty("ebook", true);
+
+            //Sem definir propriedades
+//            Message message = session.createTextMessage("<pedido><id>" + i +"</id></pedido>");
+
             producer.send(topic, message);
             System.out.println("Send to queue"  + message);
         }
