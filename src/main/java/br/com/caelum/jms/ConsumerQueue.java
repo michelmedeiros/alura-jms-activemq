@@ -12,7 +12,7 @@ import java.util.Scanner;
  * Created by Michel Medeiros on 07/11/2017.
  */
 @Component
-public class Consumer {
+public class ConsumerQueue {
 
     @SuppressWarnings("resource")
     public static void main(String[] args) throws Exception {

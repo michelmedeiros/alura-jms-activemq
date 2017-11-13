@@ -1,17 +1,15 @@
 package br.com.caelum.jms;
 
-import java.util.Scanner;
+import org.springframework.stereotype.Component;
 
 import javax.jms.*;
 import javax.naming.InitialContext;
-
-import org.springframework.stereotype.Component;
 
 /**
  * Created by Michel Medeiros on 07/11/2017.
  */
 @Component
-public class Producer {
+public class ProducerTopic {
 
     public static void main(String[] args) throws Exception {
 
@@ -22,13 +20,13 @@ public class Producer {
         connection.start();
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 
-        Destination fila = (Destination) context.lookup("financeiro");
+        Destination topic = (Destination) context.lookup("loja");
 
-        MessageProducer producer = session.createProducer(fila);
+        MessageProducer producer = session.createProducer(topic);
 
-        for(int i =1; i <= 1000; i++) {
+        for(int i =1; i <= 5; i++) {
             Message message = session.createTextMessage("<pedido><id>" + i +"</id></pedido>");
-            producer.send(fila, message);
+            producer.send(topic, message);
             System.out.println("Send to queue"  + message);
         }
 
