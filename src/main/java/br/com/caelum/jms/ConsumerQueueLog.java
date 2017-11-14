@@ -12,7 +12,7 @@ import java.util.Scanner;
  * Created by Michel Medeiros on 07/11/2017.
  */
 @Component
-public class ConsumerQueue {
+public class ConsumerQueueLog {
 
     @SuppressWarnings("resource")
     public static void main(String[] args) throws Exception {
@@ -23,7 +23,7 @@ public class ConsumerQueue {
         Connection connection = factory.createConnection();
         connection.start();
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Destination fila = (Destination) context.lookup("financeiro");
+        Destination fila = (Destination) context.lookup("log");
         MessageConsumer consumer = session.createConsumer(fila );
 
         //Visualizar mensagem sem consumir
