@@ -1,9 +1,13 @@
 package br.com.caelum.jms;
 
+import br.com.caelum.model.Pedido;
+import br.com.caelum.model.PedidoFactory;
 import org.springframework.stereotype.Component;
 
 import javax.jms.*;
 import javax.naming.InitialContext;
+import javax.xml.bind.JAXB;
+import java.io.StringWriter;
 
 /**
  * Created by Michel Medeiros on 07/11/2017.
@@ -24,17 +28,21 @@ public class ProducerTopic {
 
         MessageProducer producer = session.createProducer(topic);
 
-        for(int i =1; i <= 5; i++) {
-            //Definindo propriedades de seletor
-            Message message = session.createTextMessage("<pedido><id>" + i +"</id><ebook>true</ebook></pedido>");
-            message.setBooleanProperty("ebook", true);
+        Pedido pedido = new PedidoFactory().geraPedidoComValores();
 
-            //Sem definir propriedades
+        //Serializar XML
+//        StringWriter writer = new StringWriter();
+//        JAXB.marshal(pedido, writer);
+//        System.out.println(writer.toString());
+        //Definindo propriedades de seletor
+        Message message = session.createObjectMessage(pedido);
+        message.setBooleanProperty("ebook", true);
+
+        //Sem definir propriedades
 //            Message message = session.createTextMessage("<pedido><id>" + i +"</id></pedido>");
 
-            producer.send(topic, message);
-            System.out.println("Send to queue"  + message);
-        }
+        producer.send(topic, message);
+        System.out.println("Send to queue"  + message);
 
         session.close();
         connection.close();

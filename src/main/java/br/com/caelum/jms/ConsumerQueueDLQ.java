@@ -1,18 +1,18 @@
 package br.com.caelum.jms;
 
-import br.com.caelum.model.Pedido;
-import org.springframework.stereotype.Component;
+import java.util.Enumeration;
+import java.util.Scanner;
 
 import javax.jms.*;
 import javax.naming.InitialContext;
-import java.util.Enumeration;
-import java.util.Scanner;
+
+import org.springframework.stereotype.Component;
 
 /**
  * Created by Michel Medeiros on 07/11/2017.
  */
 @Component
-public class ConsumerTopicComercial {
+public class ConsumerQueueDLQ {
 
     @SuppressWarnings("resource")
     public static void main(String[] args) throws Exception {
@@ -21,19 +21,16 @@ public class ConsumerTopicComercial {
         ConnectionFactory factory = (ConnectionFactory) context.lookup("ConnectionFactory");
 
         Connection connection = factory.createConnection();
-        connection.setClientID("comercial");
         connection.start();
         Session session = connection.createSession(true, Session.SESSION_TRANSACTED);
-        Topic topic = (Topic) context.lookup("loja");
-        MessageConsumer consumer = session.createDurableSubscriber(topic, "assinatura" );
-
+        Destination fila = (Destination) context.lookup("DLQ");
+        MessageConsumer consumer = session.createConsumer(fila );
         //Consumir de mensagens
         consumer.setMessageListener(new MessageListener() {
             @Override
             public void onMessage(Message message) {
-                ObjectMessage pedido = (ObjectMessage) message;
                 try {
-                    System.out.println("Recebendo msg: " + pedido.getObject());
+                    System.out.println(message);
                     session.commit();
                 } catch (JMSException e) {
                     e.printStackTrace();

@@ -22,7 +22,7 @@ public class ConsumerTopicEstoqueSelector {
         Connection connection = factory.createConnection();
         connection.setClientID("estoque-selector");
         connection.start();
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+        Session session = connection.createSession(false, Session.CLIENT_ACKNOWLEDGE);
         Topic topic = (Topic) context.lookup("loja");
         MessageConsumer consumer = session.createDurableSubscriber(topic, "assinatura-selector", "ebook=false OR ebook is null", false);
 
@@ -33,6 +33,7 @@ public class ConsumerTopicEstoqueSelector {
                 TextMessage textMessage = (TextMessage) message;
                 try {
                     System.out.println("Recebendo msg: " + textMessage.getText());
+                    message.acknowledge();
                 } catch (JMSException e) {
                     e.printStackTrace();
                 }
